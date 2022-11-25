@@ -27,9 +27,9 @@ const resolvers = {
         return {token, user};
     },
     addUser: async (parent, args) => {
-      const newUser = await User.create(args)
+      const user = await User.create(args)
       const token = signToken(user);
-      return {newUser, token}
+      return {token, user}
     },
     saveBook: async (parent, {body}, context) => {
       const updatedUser = await User.findOneAndUpdate(
