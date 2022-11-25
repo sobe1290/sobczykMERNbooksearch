@@ -1,9 +1,13 @@
 const { User } = require('../models');
+const { signToken } = require('../utils/auth');
 
 const resolvers = {
   Query: {
     me: async (parent, args, context) => {
         const oneUser = await User.findOne({_id: context.user._id})
+        if (!oneUser) {
+          return res.status(400).json({ message: 'Cannot find a user with this id!' });
+        }
         return oneUser
     }
   },
