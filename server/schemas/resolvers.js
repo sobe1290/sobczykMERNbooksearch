@@ -2,8 +2,9 @@ const { User } = require('../models');
 
 const resolvers = {
   Query: {
-    me: async (parent, {_id, username}) => {
-        return User.findOne({$or: [{ _id },{ username }]})
+    me: async (parent, args, context) => {
+        const oneUser = await User.findOne({_id: context.user._id})
+        return oneUser
     }
   },
   Mutation: {
@@ -19,16 +20,29 @@ const resolvers = {
         return res.status(400).json({ message: 'Wrong password!' });
         }
         const token = signToken(user);
-        res.json({ token, user });
+        return {token, user};
     },
     addUser: async (parent, args) => {
+      const newUser = await User.create(args)
+      const token = signToken(user);
+      return {newUser, token}
+    },
+    saveBook: async (parent, args, context) => {
+      const updatedUser = await User.findOneAndUpdate(
+        { _id: context.user._id },
+        { $addToSet: { savedBooks: body } },
+        { new: true, runValidators: true }
+      );
+      return updatedUser;
 
     },
-    saveBook: async () => {
-
-    },
-    removeBook: async () => {
-
+    removeBook: async (parent, {bookId}, context) => {
+      const updatedUser = await User.findOneAndUpdate(
+        { _id: context.user._id },
+        { $pull: { savedBooks: { bookId } } },
+        { new: true }
+    );
+    return updatedUser;
     }
   }
 };
