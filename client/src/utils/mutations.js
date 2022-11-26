@@ -47,7 +47,6 @@ mutation removeBook($bookId: ID!){
         _id
         username
         email
-        password
         savedBooks {
             authors
             description
@@ -55,7 +54,7 @@ mutation removeBook($bookId: ID!){
             image
             link
             title
-            }
+        }
     }
 }
 `;
