@@ -2,6 +2,8 @@
 
 ## Project Description 
 
+Search for any book using the Google Books API!
+
 This is a full stack MERN (MongoDB, Express, React, Node) application that uses GraphQL and Apollo for API calls. This project was originally a RESTful api, but was refactored to use GraphQL and Apollo.
 
 Live Deployment cand be viewed at:
@@ -85,6 +87,7 @@ For questions contact my via Github at https://github.com/sobe1290 or my email a
 
 Below is a screenshot of the live application:
 
+![screenshot](https://user-images.githubusercontent.com/26222624/204079304-373b4aca-315d-45d9-a56a-46fd827e8439.png)
 
 
 
