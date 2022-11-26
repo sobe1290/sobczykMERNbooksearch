@@ -1,5 +1,6 @@
 const { User } = require('../models');
 const { signToken } = require('../utils/auth');
+const { AuthenticationError } = require("apollo-server-express");
 
 const resolvers = {
   Query: {
@@ -12,30 +13,30 @@ const resolvers = {
     }
   },
   Mutation: {
-    login: async (parent, {username, email, password}) => {
-        const user = await User.findOne({ $or: [{ username}, { email }] });
+    login: async (parent, {email, password}) => {
+        const user = await User.findOne({ email });
         if (!user) {
-        return res.status(400).json({ message: "Can't find this user" });
+          throw new AuthenticationError("Incorrect credentials");
         }
 
         const correctPw = await user.isCorrectPassword(password);
 
         if (!correctPw) {
-        return res.status(400).json({ message: 'Wrong password!' });
+          throw new AuthenticationError("Incorrect credentials");
         }
         const token = signToken(user);
         return {token, user};
     },
     addUser: async (parent, args) => {
-      const user = await User.create(args)
+      const user = await User.create(args);
       const token = signToken(user);
-      return {token, user}
+      return { token, user };
     },
-    saveBook: async (parent, {body}, context) => {
+    saveBook: async (parent, {input}, context) => {
       const updatedUser = await User.findOneAndUpdate(
         { _id: context.user._id },
-        { $addToSet: { savedBooks: body } },
-        { new: true }
+        { $addToSet: { savedBooks: input } },
+        { new: true, runValidators: true  }
       );
       return updatedUser;
 
